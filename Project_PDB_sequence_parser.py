@@ -20,9 +20,9 @@ df = pd.read_csv('Human_CDR3_MHCI_TRAandB_PDB_all_epitopes_filtered_resolution_i
 # URL for PDB file page
 pdburl = 'https://files.rcsb.org/view/'
 
-# Iterate through PDB codes in db and find associated alignment sequence text file 
-# E.g. 'GetPage.pl?pdbcode=' + PDB CODE + '&template=align.html&l=' + CHAIN NUMBER
-# Save sequence alignment data as txt file
+## Iterate through PDB codes in db and find associated alignment sequence text file 
+## E.g. 'GetPage.pl?pdbcode=' + PDB CODE + '&template=align.html&l=' + CHAIN NUMBER
+## Save sequence alignment data as txt file
 #for index, row in df.iterrows():
 #    PDB = row['PDB'].lower()
 #    url = str(pdburl+PDB+'.pdb')
@@ -34,9 +34,7 @@ pdburl = 'https://files.rcsb.org/view/'
 #        f.close()
 #        time.sleep(2)
         
-
-# Make iterable function to parse all PDB files in folder:
-
+## Make iterable function to parse all PDB files in folder:
 #for filename in os.listdir('PDBSum_data/PDB_files/'): 
 #    seq_residue = []
 #    seq_chain = []

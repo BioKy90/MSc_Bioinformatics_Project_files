@@ -5,85 +5,77 @@ Created on Mon Jul  5 18:02:59 2021
 
 @author: Ky
 """
-
 import os
 import urllib.request
 import re
 import pandas as pd
 import time
+path = '/Users/kyvinguyen/Documents/Uni/Birkbeck/MSc_Bioinformatics/Research_Project/Project_python_files/'
 
-df = pd.read_csv('Human_CDR3_MHCI_TRAandB_PDB_all_epitopes_filtered_Resolution.csv')
 
+#df = pd.read_csv('Human_CDR3_MHCI_TRAandB_PDB_all_epitopes_filtered_Resolution.csv')
+df = pd.read_csv(path + 'Human_CDR3_paired_MHCI_Res_multi.csv')
 
 # Determine protein-ligand page URL for each PDB code
 pdburl = 'https://www.ebi.ac.uk/thornton-srv/databases/cgi-bin/pdbsum/'
 geturl = 'GetLigInt.pl?pdb='
 typeurl = '&ligtype=01&ligno='
 
-# VDJdb > via PDBcode > PDBSum protein-ligand files
-# Iterate through PDB codes in VDJdb df, dowload protein-ligand interaction.txt file 
-# Output: .txt files in 'Protein_ligand' folder
-# E.g. 'GetPage.pl?pdbcode=' + PDB CODE + '&template=align.html&l=' + CHAIN NUMBER
-#
+## VDJdb > via PDBcode > PDBSum protein-ligand files
+## Iterate through PDB codes in VDJdb df, dowload protein-ligand interaction.txt file 
+## Output: .txt files in 'Protein_ligand' folder
+## E.g. 'GetPage.pl?pdbcode=' + PDB CODE + '&template=align.html&l=' + CHAIN NUMBER
+
 #for index, row in df.iterrows():
 #    PDB = row['PDB'].lower()
 #    url = str(pdburl+geturl+PDB+typeurl+'01')
 #    with urllib.request.urlopen(url) as f:
 #        html = f.read().decode('utf-8')
-#        filename = str('PDBSum_data/Protein_ligand/' + PDB + '.txt')
+#        filename = str(path + 'PDBSum_data/Protein_ligand/' + PDB + '.txt')
 #        f = open(filename, 'w')
 #        f.write(html)
 #        f.close()
 #        time.sleep(2)
 
-# Download single PDB protein-ligand file
-#with urllib.request.urlopen('https://www.ebi.ac.uk/thornton-srv/databases/cgi-bin/pdbsum/GetLigInt.pl?pdb=2ak4&ligtype=01&ligno=01') as f:
-#    html = f.read().decode('utf-8')
-#    f = open('PDBSum_data/Protein_ligand/2ak4.txt', 'w')
-#    f.write(html)
-#    f.close()
+## Find PDB codes with no interaction data file, remove PDB entries from dataframe
+## Output: dataframe 'df_interaction' 
+#No_interaction_data = [] 
+#for filename in os.listdir(path + 'PDBSum_data/Protein_ligand/'):  
+#    with open(path + 'PDBSum_data/Protein_ligand/'+filename, errors='ignore') as file:
+#        f = file.readlines()
+#        if f[0].startswith('<!DOCTYPE'):
+#            PDB = filename.split('.')
+#            No_interaction_data.append(str(PDB[0]))
 
-# Find PDB codes with no interaction data file, remove PDB entries from dataframe
-# Output: dataframe 'df_interaction' 
-No_interaction_data = [] 
-for filename in os.listdir('PDBSum_data/Protein_ligand/'):  
-    with open('PDBSum_data/Protein_ligand/'+filename, errors='ignore') as file:
-        f = file.readlines()
-        if f[0].startswith('<!DOCTYPE'):
-            PDB = filename.split('.')
-            No_interaction_data.append(str(PDB[0]))
-
-No_interaction_PDB = ['6avf', '6avg', '2nx5', '4pri', '4prh', '2ypl', '2ak4', '4jrx', '4jry']
-
+## Delete csv files with no data
 #No_interaction_data_txt = [i +'.txt' for i in No_interaction_data]
 #for i in No_interaction_data_txt: 
-#    os.remove('PDBSum_data/Protein_ligand/' + i)
-#            
-#df = pd.read_csv('Human_CDR3_MHCI_TRAandB_PDB_all_epitopes_filtered_Resolution.csv', index_col=[0])
+#    os.remove(path + 'PDBSum_data/Protein_ligand/' + i)
+
+## Update df, removing rows matching PDBs with no interaction
+#df = pd.read_csv(path + 'Human_CDR3_paired_MHCI_Res_multi.csv', index_col=[0])
 #df['PDB'] = df['PDB'].str.lower()
-#df_interaction = df[~df.PDB.isin(No_interaction_PDB)].reset_index(drop=True)
-##print(df_interaction.head())
-#df_interaction.to_csv('Human_CDR3_MHCI_TRAandB_PDB_all_epitopes_filtered_resolution_interaction.csv')
+#df_interaction = df[~df.PDB.isin(No_interaction_data)].reset_index(drop=True)
+#df_interaction.to_csv(path + 'Human_CDR3_paired_MHCI_Res_multi_Interactions.csv')
 
 
-df_interaction = pd.read_csv('Human_CDR3_MHCI_TRAandB_PDB_all_epitopes_filtered_resolution_interaction.csv')
-df = df_interaction
-
-uniqueCDR3 = df['CDR3'].unique()
-print('Unique CDR3s = ' + str(len(uniqueCDR3)))
-
-uniqueEpitope = df['Epitope'].unique()
-print('Unique epitopes = ' + str(len(uniqueEpitope)))
+## Stats 
+#df_interaction = pd.read_csv('Human_CDR3_MHCI_TRAandB_PDB_all_epitopes_filtered_resolution_interaction.csv')
+#df = df_interaction
 #
-uniquePDB = df['PDB'].unique()
-print('Unique PDB codes = '+ str(len(uniquePDB)))
-
-
+#uniqueCDR3 = df['CDR3'].unique()
+#print('Unique CDR3s = ' + str(len(uniqueCDR3)))
+#
+#uniqueEpitope = df['Epitope'].unique()
+#print('Unique epitopes = ' + str(len(uniqueEpitope)))
+##
+#uniquePDB = df['PDB'].unique()
+#print('Unique PDB codes = '+ str(len(uniquePDB)))
 
 
 
 def PDB_interaction_parser(PDBcode):
-    PDBdirectory = 'PDBSum_data/Protein_ligand/' + PDBcode +'.txt'
+    PDBdirectory = path + 'PDBSum_data/Protein_ligand/' + PDBcode +'.txt'
     
     with open(PDBdirectory, errors='ignore') as file:
         f = file.read()
@@ -153,7 +145,6 @@ def PDB_interaction_parser(PDBcode):
             HBcontacts_df = pd.DataFrame({'Residue':Residue_single, 'Residue no.': Residue_no, 'Chain': Chain, 'Lig. residue': Lig_residue_single, 'Lig. residue no.': Lig_residue_no, 'Lig. chain': Lig_chain, 'Distance': Distance})
             return HBcontacts_df
     
-    
         # Nested function for parsing non-HB contact residues 
         non_HBcontacts = []
         for line in nonHBsplit:
@@ -222,13 +213,26 @@ def PDB_interaction_parser(PDBcode):
 #print(seq_short)
     
 
-for filename in os.listdir('PDBSum_data/Protein_ligand/'):
-    filename_split = filename.split('.')
-    PDB = filename_split[0]
-#    print(filename)
-    protein_ligand_df = PDB_interaction_parser(PDB)
-#    print(protein_ligand_df.head())
-    protein_ligand_df.to_csv('PDBSum_data/Interaction_df_files/' + PDB + '_interaction_df' + '.csv')
+#for filename in os.listdir(path + 'PDBSum_data/Protein_ligand/'):
+#    filename_split = filename.split('.')
+#    PDB = filename_split[0]
+##    print(filename)
+#    protein_ligand_df = PDB_interaction_parser(PDB)
+##    print(protein_ligand_df.head())
+#    protein_ligand_df.to_csv(path + 'PDBSum_data/Interaction_df_files/' + PDB + '_interaction_df' + '.csv')
+
+
+li = []
+for filename in os.listdir(path + 'PDBSum_data/Interaction_df_files'):
+    df = pd.read_csv(path + 'PDBSum_data/Interaction_df_files/' + filename, error_bad_lines=False)
+    name = filename.split('_')
+    df['PDB'] = name[0]
+    df = df[['PDB', 'H bonded', 'Residue', 'Residue no.', 'Chain', 'Lig. residue', 'Lig. residue no.', 'Lig. chain', 'Distance']]
+    li.append(df)
+
+frame = pd.concat(li, axis = 0, ignore_index = True)
+#print(frame)
+frame.to_csv(path + 'PDBSum_data/Interaction_df_files/Interactions_df.csv')
 
 
 #
