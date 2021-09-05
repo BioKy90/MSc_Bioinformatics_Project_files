@@ -12,9 +12,10 @@ import re
 import time
 import pandas as pd
 
+path = '/Users/kyvinguyen/Documents/Uni/Birkbeck/MSc_Bioinformatics/Research_Project/Project_python_files/'
 
 
-df = pd.read_csv('Human_CDR3_MHCI_TRAandB_PDB_all_epitopes_filtered_resolution_interaction.csv')
+df = pd.read_csv(path + 'Human_CDR3_paired_MHCI_Res_multi_Interactions.csv')
 #print(df.head())
 
 # URL for PDB file page
@@ -28,61 +29,66 @@ pdburl = 'https://files.rcsb.org/view/'
 #    url = str(pdburl+PDB+'.pdb')
 #    with urllib.request.urlopen(url) as f:
 #        html = f.read().decode('utf-8')
-#        filename = str('PDBSum_data/PDB_files/' + PDB + '.txt')
+#        filename = str(path + 'PDBSum_data/PDB_files/' + PDB + '.txt')
 #        f = open(filename, 'w')
 #        f.write(html)
 #        f.close()
 #        time.sleep(2)
         
-## Make iterable function to parse all PDB files in folder:
-#for filename in os.listdir('PDBSum_data/PDB_files/'): 
-#    seq_residue = []
+
+
+
+### This works
+#letters = {'ALA':'A','ARG':'R','ASN':'N','ASP':'D','CYS':'C','GLU':'E','GLN':'Q','GLY':'G','HIS':'H','ILE':'I','LEU':'L','LYS':'K','MET':'M','PHE':'F','PRO':'P','SER':'S','THR':'T','TRP':'W','TYR':'Y','VAL':'V'}
+#for filename in os.listdir(path + 'PDBSum_data/PDB_files/'): 
+#    PDB = filename.split('.')[0]
+#    PDBdirectory = path + 'PDBSum_data/PDB_files/' + PDB + '.txt'
+#    seq_residue_3 = []
 #    seq_chain = []
-#    seq_index = []
-#    with open('PDBSum_data/PDB_files/' + filename) as file:
+#    seq_index = ['0']
+#    with open(PDBdirectory, errors = 'ignore') as file:
 #        f = file.readlines()
 #        for line in f:
 #            splitline = line.split()
-#            if splitline[0] == 'ATOM' and splitline[5] not in seq_index:
-#                seq_residue.append(splitline[3])
-#                seq_chain.append(splitline[4])
-#                seq_index.append(splitline[5])
-#
+#            if splitline[0] == 'ATOM' and splitline[5] != seq_index[-1]:
+#                if len(splitline[2]) < 3:
+##            if splitline[0] == 'ATOM' and splitline[5] != seq_index[-1] and len(splitline[2]) < 3:
+#                    seq_residue_3.append(splitline[3][-3:])
+#                    seq_chain.append(splitline[4])
+#                    seq_index.append(splitline[5])
+#                else: 
+#                    seq_residue_3.append(splitline[2][-3:])
+#                    seq_chain.append(splitline[3])
+#                    seq_index.append(splitline[4])
+##            elif splitline[0] == 'ATOM' and splitline[5] != seq_index[-1] and len(splitline[2]) > 2:
+##                seq_residue_3.append(splitline[2][-3:])
+##                seq_chain.append(splitline[3])
+##                seq_index.append(splitline[4])
+#        seq_index.pop(0)
+#        seq_residue = [x if x not in letters else letters[x] for x in seq_residue_3]  
+#        PDB_df = pd.DataFrame({'Residue': seq_residue, 'Chain': seq_chain, 'Residue no.': seq_index}).drop_duplicates(keep='first')
+#        PDB_df.to_csv(path + 'PDBSum_data/Parsed_PDB_files/' + PDB + '_df.csv')
+
+## Concatenate all dfs into single df
+li = []
+for filename in os.listdir(path + 'PDBSum_data/Parsed_PDB_files/'):
+    df = pd.read_csv(path + 'PDBSum_data/Parsed_PDB_files/' + filename, error_bad_lines=False)
+    name = filename.split('_')
+    df['PDB'] = name[0]
+    df = df[['PDB', 'Residue', 'Chain', 'Residue no.']]
+    li.append(df)
+
+frame = pd.concat(li, axis = 0, ignore_index = True)
+#print(frame)
+frame.to_csv(path + 'PDBSum_data/Parsed_PDB_files/AA_sequence_df.csv')
 
 
-letters = {'ALA':'A','ARG':'R','ASN':'N','ASP':'D','CYS':'C','GLU':'E','GLN':'Q','GLY':'G','HIS':'H','ILE':'I','LEU':'L','LYS':'K','MET':'M','PHE':'F','PRO':'P','SER':'S','THR':'T','TRP':'W','TYR':'Y','VAL':'V'}
-for filename in os.listdir('PDBSum_data/PDB_files/'): 
-#    print(filename)
-    PDB = filename.split('.')[0]
-    PDBdirectory = 'PDBSum_data/PDB_files/' + PDB + '.txt'
-    seq_residue_3 = []
-    seq_chain = []
-    seq_index = ['0']
-    with open(PDBdirectory) as file:
-        f = file.readlines()
-        for line in f:
-            splitline = line.split()
-            if splitline[0] == 'ATOM' and splitline[5] != seq_index[-1]:
-                if len(splitline[2]) < 3:
-#            if splitline[0] == 'ATOM' and splitline[5] != seq_index[-1] and len(splitline[2]) < 3:
-                    seq_residue_3.append(splitline[3][-3:])
-                    seq_chain.append(splitline[4])
-                    seq_index.append(splitline[5])
-                else: 
-                    seq_residue_3.append(splitline[2][-3:])
-                    seq_chain.append(splitline[3])
-                    seq_index.append(splitline[4])
-#            elif splitline[0] == 'ATOM' and splitline[5] != seq_index[-1] and len(splitline[2]) > 2:
-#                seq_residue_3.append(splitline[2][-3:])
-#                seq_chain.append(splitline[3])
-#                seq_index.append(splitline[4])
-        seq_index.pop(0)
-        seq_residue = [x if x not in letters else letters[x] for x in seq_residue_3]  
-        PDB_df = pd.DataFrame({'Residue': seq_residue, 'Chain': seq_chain, 'Residue no.': seq_index}).drop_duplicates(keep='first')
-        PDB_df.to_csv('PDBSum_data/Parsed_PDB_files/' + PDB + '_df.csv')
 
 
-# Keep getting KeyError, try below
+
+
+
+## BELOW TEST CODE ONLY
 # Make below a function: def PDBfile_seq_extract(PDBfile): and then cycling through folder using function
     
 #letters = {'ALA':'A','ARG':'R','ASN':'N','ASP':'D','CYS':'C','GLU':'E','GLN':'Q','GLY':'G','HIS':'H','ILE':'I','LEU':'L','LYS':'K','MET':'M','PHE':'F','PRO':'P','SER':'S','THR':'T','TRP':'W','TYR':'Y','VAL':'V'}
@@ -110,11 +116,11 @@ for filename in os.listdir('PDBSum_data/PDB_files/'):
 #def PDB_sequence_extract(filename):
 #    letters = {'ALA':'A','ARG':'R','ASN':'N','ASP':'D','CYS':'C','GLU':'E','GLN':'Q','GLY':'G','HIS':'H','ILE':'I','LEU':'L','LYS':'K','MET':'M','PHE':'F','PRO':'P','SER':'S','THR':'T','TRP':'W','TYR':'Y','VAL':'V'}
 #    PDB_code = filename.split('.')[0]
-#    PDBdirectory = 'PDBSum_data/PDB_files/' + filename
+#    PDBdirectory = path + 'PDBSum_data/PDB_files/' + filename
 #    seq_residue_3 = []
 #    seq_chain = []
 #    seq_index = ['0']
-#    with open(PDBdirectory) as file:
+#    with open(PDBdirectory, errors = 'ignore') as file:
 #        f = file.readlines()
 #        for line in f:
 #            splitline = line.split()
@@ -123,13 +129,12 @@ for filename in os.listdir('PDBSum_data/PDB_files/'):
 #                seq_chain.append(splitline[4])
 #                seq_index.append(splitline[5])
 #        seq_index.pop(0)
-##        seq_residue = [letters[i] for i in seq_residue_3] 
 #        seq_residue = [x if x not in letters else letters[x] for x in seq_residue_3]
 #        PDB_df = pd.DataFrame({'Residue': seq_residue, 'Chain': seq_chain, 'Residue no.': seq_index})
-#        Parsed_directory = 'PDBSum_data/PDB_files/Parsed_PDB_files/' + str(PDB_code) + '.csv'
+#        Parsed_directory = path + 'PDBSum_data/Parsed_PDB_files/' + str(PDB_code) + '_df.csv'
 #        PDB_df.to_csv(Parsed_directory)
 #
-#for filename in os.listdir('PDBSum_data/PDB_files/'): 
+#for filename in os.listdir(path + 'PDBSum_data/PDB_files/'): 
 #    PDB_sequence_extract(filename)
 
 # DEBUG UNICODE ERROR 

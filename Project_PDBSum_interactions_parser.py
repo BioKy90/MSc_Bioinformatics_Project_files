@@ -73,7 +73,7 @@ typeurl = '&ligtype=01&ligno='
 #print('Unique PDB codes = '+ str(len(uniquePDB)))
 
 
-
+## Function for parsing interaction data into a df 
 def PDB_interaction_parser(PDBcode):
     PDBdirectory = path + 'PDBSum_data/Protein_ligand/' + PDBcode +'.txt'
     
@@ -221,7 +221,7 @@ def PDB_interaction_parser(PDBcode):
 ##    print(protein_ligand_df.head())
 #    protein_ligand_df.to_csv(path + 'PDBSum_data/Interaction_df_files/' + PDB + '_interaction_df' + '.csv')
 
-
+## Concatenate individual interaction dfs into single df 
 li = []
 for filename in os.listdir(path + 'PDBSum_data/Interaction_df_files'):
     df = pd.read_csv(path + 'PDBSum_data/Interaction_df_files/' + filename, error_bad_lines=False)
@@ -235,7 +235,7 @@ frame = pd.concat(li, axis = 0, ignore_index = True)
 frame.to_csv(path + 'PDBSum_data/Interaction_df_files/Interactions_df.csv')
 
 
-#
+# 
 #for filename in os.listdir('PDBSum_data/Protein_ligand/'):
 #    print(filename)
 #    with open(filename) as file:
