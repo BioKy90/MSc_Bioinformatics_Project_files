@@ -58,6 +58,7 @@ for name, group in VDJdb_group:
             indexstart = seq.index(CDR3)
             indexend = indexstart + len(CDR3)
             CDR3_df = AA_sequence_df.iloc[indexstart:indexend]
+            ## Line below: Try using .loc[row_indexer,col_indexer] = value instead
             CDR3_df['Gene'] = row['Gene']
             Ligand_df.append(CDR3_df)
         except ValueError:
@@ -71,22 +72,22 @@ for name, group in VDJdb_group:
     CDR3_matched_Epitopes_df.append(Ligand_df)
 
 CDR3_matched_Epitopes_df = pd.concat(CDR3_matched_Epitopes_df)
-CDR3_matched_Epitopes_df.to_csv(path + 'PDBSum_data/CDR3_matched_Epitopes_df.csv')
+#CDR3_matched_Epitopes_df.to_csv(path + 'PDBSum_data/CDR3_matched_Epitopes_df.csv')
     
 ##  Concat all dataframes into Ligand_df
 #    Ligand_df = pd.DataFrame({'idx':[1,2,3], 'dfs':[df1, df2, df3]})
 
-#CDR = 'CAVNF'
-##bCDR3seq = 'CASRPGLAGGRPEQYF'
-##aCDR3seq = 'CAVTTDSWGKLQF'
-## find where CDR3seq starts in the residue row,
-##seq = AA_sequence_df.Residue.astype(str).str.cat()
-#indexstart = seq.index(CDR)
-#indexend = indexstart + len(CDR)
-##
-#CDR3_df = AA_sequence_df.iloc[indexstart:indexend]
-##
-#print(CDR3_df)
+CDR = 'CAVNF'
+#bCDR3seq = 'CASRPGLAGGRPEQYF'
+#aCDR3seq = 'CAVTTDSWGKLQF'
+# find where CDR3seq starts in the residue row,
+#seq = AA_sequence_df.Residue.astype(str).str.cat()
+indexstart = seq.index(CDR)
+indexend = indexstart + len(CDR)
+#
+CDR3_df = AA_sequence_df.iloc[indexstart:indexend]
+#
+print(CDR3_df)
 
 
 
