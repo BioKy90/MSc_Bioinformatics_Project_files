@@ -21,41 +21,41 @@ pdburl = 'https://www.ebi.ac.uk/thornton-srv/databases/cgi-bin/pdbsum/'
 geturl = 'GetLigInt.pl?pdb='
 typeurl = '&ligtype=01&ligno='
 
-## VDJdb > via PDBcode > PDBSum protein-ligand files
-## Iterate through PDB codes in VDJdb df, dowload protein-ligand interaction.txt file 
-## Output: .txt files in 'Protein_ligand' folder
-## E.g. 'GetPage.pl?pdbcode=' + PDB CODE + '&template=align.html&l=' + CHAIN NUMBER
+# VDJdb > via PDBcode > PDBSum protein-ligand files
+# Iterate through PDB codes in VDJdb df, dowload protein-ligand interaction.txt file 
+# Output: .txt files in 'Protein_ligand' folder
+# E.g. 'GetPage.pl?pdbcode=' + PDB CODE + '&template=align.html&l=' + CHAIN NUMBER
 
-#for index, row in df.iterrows():
-#    PDB = row['PDB'].lower()
-#    url = str(pdburl+geturl+PDB+typeurl+'01')
-#    with urllib.request.urlopen(url) as f:
-#        html = f.read().decode('utf-8')
-#        filename = str(path + 'PDBSum_data/Protein_ligand/' + PDB + '.txt')
-#        f = open(filename, 'w')
-#        f.write(html)
-#        f.close()
-#        time.sleep(2)
+for index, row in df.iterrows():
+    PDB = row['PDB'].lower()
+    url = str(pdburl+geturl+PDB+typeurl+'01')
+    with urllib.request.urlopen(url) as f:
+        html = f.read().decode('utf-8')
+        filename = str(path + 'PDBSum_data/Protein_ligand/' + PDB + '.txt')
+        f = open(filename, 'w')
+        f.write(html)
+        f.close()
+        time.sleep(2)
 
-## Find PDB codes with no interaction data file, remove PDB entries from dataframe
-## Output: dataframe 'df_interaction' 
-#No_interaction_data = [] 
-#for filename in os.listdir(path + 'PDBSum_data/Protein_ligand/'):  
-#    with open(path + 'PDBSum_data/Protein_ligand/'+filename, errors='ignore') as file:
-#        f = file.readlines()
-#        if f[0].startswith('<!DOCTYPE'):
-#            PDB = filename.split('.')
-#            No_interaction_data.append(str(PDB[0]))
+# Find PDB codes with no interaction data file, remove PDB entries from dataframe
+# Output: dataframe 'df_interaction' 
+No_interaction_data = [] 
+for filename in os.listdir(path + 'PDBSum_data/Protein_ligand/'):  
+    with open(path + 'PDBSum_data/Protein_ligand/'+filename, errors='ignore') as file:
+        f = file.readlines()
+        if f[0].startswith('<!DOCTYPE'):
+            PDB = filename.split('.')
+            No_interaction_data.append(str(PDB[0]))
 
 ## Delete csv files with no data
-#No_interaction_data_txt = [i +'.txt' for i in No_interaction_data]
-#for i in No_interaction_data_txt: 
-#    os.remove(path + 'PDBSum_data/Protein_ligand/' + i)
+No_interaction_data_txt = [i +'.txt' for i in No_interaction_data]
+for i in No_interaction_data_txt: 
+    os.remove(path + 'PDBSum_data/Protein_ligand/' + i)
 
 ## Update df, removing rows matching PDBs with no interaction
-#df = pd.read_csv(path + 'Human_CDR3_paired_MHCI_Res_multi.csv', index_col=[0])
-#df['PDB'] = df['PDB'].str.lower()
-#df_interaction = df[~df.PDB.isin(No_interaction_data)].reset_index(drop=True)
+df = pd.read_csv(path + 'Human_CDR3_paired_MHCI_Res_multi.csv', index_col=[0])
+df['PDB'] = df['PDB'].str.lower()
+df_interaction = df[~df.PDB.isin(No_interaction_data)].reset_index(drop=True)
 #df_interaction.to_csv(path + 'Human_CDR3_paired_MHCI_Res_multi_Interactions.csv')
 
 
@@ -233,6 +233,7 @@ for filename in os.listdir(path + 'PDBSum_data/Interaction_df_files'):
 frame = pd.concat(li, axis = 0, ignore_index = True)
 #print(frame)
 frame.to_csv(path + 'PDBSum_data/Interaction_df_files/Interactions_df.csv')
+
 
 
 # 

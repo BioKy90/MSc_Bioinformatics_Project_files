@@ -16,28 +16,26 @@ path = '/Users/kyvinguyen/Documents/Uni/Birkbeck/MSc_Bioinformatics/Research_Pro
 
 
 df = pd.read_csv(path + 'Human_CDR3_paired_MHCI_Res_multi_Interactions.csv')
-#print(df.head())
+
+
 
 # URL for PDB file page
 pdburl = 'https://files.rcsb.org/view/'
 
-## Iterate through PDB codes in db and find associated alignment sequence text file 
-## E.g. 'GetPage.pl?pdbcode=' + PDB CODE + '&template=align.html&l=' + CHAIN NUMBER
-## Save sequence alignment data as txt file
-#for index, row in df.iterrows():
-#    PDB = row['PDB'].lower()
-#    url = str(pdburl+PDB+'.pdb')
-#    with urllib.request.urlopen(url) as f:
-#        html = f.read().decode('utf-8')
-#        filename = str(path + 'PDBSum_data/PDB_files/' + PDB + '.txt')
-#        f = open(filename, 'w')
-#        f.write(html)
-#        f.close()
-#        time.sleep(2)
+# Iterate through PDB codes in db and find associated alignment sequence text file 
+# E.g. 'GetPage.pl?pdbcode=' + PDB CODE + '&template=align.html&l=' + CHAIN NUMBER
+# Save sequence alignment data as txt file
+for index, row in df.iterrows():
+    PDB = row['PDB'].lower()
+    url = str(pdburl+PDB+'.pdb')
+    with urllib.request.urlopen(url) as f:
+        html = f.read().decode('utf-8')
+        filename = str(path + 'PDBSum_data/PDB_files/' + PDB + '.txt')
+        f = open(filename, 'w')
+        f.write(html)
+        f.close()
+        time.sleep(2)
         
-
-
-
 ### This works
 #letters = {'ALA':'A','ARG':'R','ASN':'N','ASP':'D','CYS':'C','GLU':'E','GLN':'Q','GLY':'G','HIS':'H','ILE':'I','LEU':'L','LYS':'K','MET':'M','PHE':'F','PRO':'P','SER':'S','THR':'T','TRP':'W','TYR':'Y','VAL':'V'}
 #for filename in os.listdir(path + 'PDBSum_data/PDB_files/'): 
@@ -81,7 +79,6 @@ for filename in os.listdir(path + 'PDBSum_data/Parsed_PDB_files/'):
 frame = pd.concat(li, axis = 0, ignore_index = True)
 #print(frame)
 frame.to_csv(path + 'PDBSum_data/Parsed_PDB_files/AA_sequence_df.csv')
-
 
 
 

@@ -18,6 +18,13 @@ PDBdf = pd.read_csv(path + 'PDBSum_data/Parsed_PDB_files/1ao7_df.csv')
 VDJdb = pd.read_csv(path + 'Human_CDR3_paired_MHCI_Res_multi_Interactions.csv')
 AA_sequence_df = pd.read_csv(path + 'PDBSum_data/AA_sequence_df.csv')
 
+unique_epi1 = VDJdb['Epitope'].unique()
+print('Unique epitopess from VDJdb = ' + str(len(unique_epi1)))
+uniquePDB1 = VDJdb['PDB'].unique()
+print('Unique PDBs from VDJdb = ' + str(len(uniquePDB1)))
+#uniquePDB_AA = AA_sequence_df['PDB'].unique()
+#print('Unique PDBs from AA = ' + str(len(uniquePDB_AA)))
+
 bCDR3seq = 'CASRPGLAGGRPEQYF'
 aCDR3seq = 'CAVTTDSWGKLQF'
 # find where CDR3seq starts in the residue row,
@@ -35,59 +42,169 @@ aCDR3seq = 'CAVTTDSWGKLQF'
 ## add the LIGAND residue and residue no to the dataframe: to_csv(CDR3_ligand_df.csv)
 ## Concatenate all dfs to a master_interactions_df.csv
 
-VDJdb_group = VDJdb.groupby(['Epitope'])
+#VDJdb_group = VDJdb.groupby(['Epitope'])
 #Epitopes = []
+#CDR3_matched_Epitopes_df = []
+#seq = AA_sequence_df.Residue.astype(str).str.cat()
+#for name, group in VDJdb_group:
+##    Epitopes.append(str(name))
+#
+#    a_CDR3 = group.loc[group["Gene"] == "TRA"]
+#    b_CDR3 = group.loc[group["Gene"] == "TRB"]
+#    CDR3_df = pd.concat([a_CDR3, b_CDR3])
+##    CDR3_df_TRB = CDR3_df[CDR3_df['Gene'] == 'TRB']
+#    # Only include TRB
+##    CDR3_df = group.loc[group["Gene"] == "TRB"]
+##    print(name)
+##    print('------------')
+##    print(CDR3_df)
+##    print(type(a_CDR3))
+#    
+#    Ligand_df = []
+#    for index, row in CDR3_df.iterrows():
+#            CDR3 = row['CDR3']
+#    #        print(CDR3)
+#            try:
+#                indexstart = seq.index(CDR3)
+#                indexend = indexstart + len(CDR3)
+#                CDR3_df = AA_sequence_df.iloc[indexstart:indexend]
+#                ## Line below: Try using .loc[row_indexer,col_indexer] = value instead
+#                CDR3_df['Gene'] = row['Gene']
+#                Ligand_df.append(CDR3_df)
+#            except ValueError:
+#                pass
+##        
+#    Ligand_df = pd.concat(Ligand_df)
+#    Ligand_df['Epitope'] = name
+##    print(name)
+##    print('------------')
+##    print(Ligand_df)
+#    CDR3_matched_Epitopes_df.append(Ligand_df)
+
+
+
+#--------------------------------------------------------------
+
+Found_CDR3 = []
+Error_CDR3 = []
+VDJdb_TRB = pd.read_csv(path + 'Human_CDR3_paired_MHCI_Res_multi_Interactions.csv')
+VDJdb_group = VDJdb_TRB.groupby(['Epitope'])
+#print(len(VDJdb_TRB['PDB'].unique()))
+Epitopes = []
 CDR3_matched_Epitopes_df = []
 seq = AA_sequence_df.Residue.astype(str).str.cat()
+
 for name, group in VDJdb_group:
 #    Epitopes.append(str(name))
+    Epi_group = group
 
-    a_CDR3 = group.loc[group["Gene"] == "TRA"]
-    b_CDR3 = group.loc[group["Gene"] == "TRB"]
-    CDR3_df = pd.concat([a_CDR3, b_CDR3])
-#    print(name)
-#    print('------------')
-#    print(CDR3_df)
-#    print(type(a_CDR3))
-    
     Ligand_df = []
-    for index, row in CDR3_df.iterrows():
-        CDR3 = row['CDR3']
-#        print(CDR3)
-        try:
-            indexstart = seq.index(CDR3)
-            indexend = indexstart + len(CDR3)
-            CDR3_df = AA_sequence_df.iloc[indexstart:indexend]
-            ## Line below: Try using .loc[row_indexer,col_indexer] = value instead
-            CDR3_df['Gene'] = row['Gene']
-            Ligand_df.append(CDR3_df)
-        except ValueError:
-            pass
-#        
-    Ligand_df = pd.concat(Ligand_df)
-    Ligand_df['Epitope'] = name
-#    print(name)
-#    print('------------')
-#    print(Ligand_df)
-    CDR3_matched_Epitopes_df.append(Ligand_df)
-
-CDR3_matched_Epitopes_df = pd.concat(CDR3_matched_Epitopes_df)
-#CDR3_matched_Epitopes_df.to_csv(path + 'PDBSum_data/CDR3_matched_Epitopes_df.csv')
+    for index, row in Epi_group.iterrows():
+        if row['Gene'] == 'TRB':
+                CDR3 = row['CDR3'].upper()
+#                print(row['PDB'].upper())
+                try:
+                    indexstart = seq.index(CDR3)
+                    indexend = indexstart + len(CDR3)
+                    CDR3_df = AA_sequence_df.iloc[indexstart:indexend]
+                    ## Line below: Try using .loc[row_indexer,col_indexer] = value instead
     
+                    Ligand_df.append(CDR3_df)
+                    Found_CDR3.append(CDR3)
+                except ValueError:
+                    Error_CDR3.append(CDR3)
+                    pass
+        else:
+            pass
+    try:
+        Ligand_df = pd.concat(Ligand_df)
+        Ligand_df['Epitope'] = name
+    #    print(name)
+    #    print('------------')
+    #    print(Ligand_df)
+        CDR3_matched_Epitopes_df.append(Ligand_df)
+    except ValueError:
+        pass
+##--------------------------------------------------------------
+#
+CDR3_matched_Epitopes_df = pd.concat(CDR3_matched_Epitopes_df)
+#print(len(CDR3_matched_Epitopes_df['PDB'].unique()))
+        
+CDR3_matched_Epitopes_df.to_csv(path + 'PDBSum_data/TRB_CDR3_matched_df.csv')
+    
+    
+#5euo = 'CASSIRSSYEQYF'
+
+#CDR3_all_df = []
+#Found_CDR3 = []
+#Error_CDR3 = []
+#
+#CDR3_AA_df = []
+#for index, row in VDJdb_TRB.iterrows():
+#    if row['Gene'] == 'TRB':
+#        CDR3 = row['CDR3'].upper()
+#        try:
+#            indexstart = seq.index(CDR3)
+#            indexend = indexstart + len(CDR3)
+#            CDR3_AA_df = AA_sequence_df.iloc[indexstart:indexend]
+##            Found_CDR3.append(CDR3)
+##            CDR3_all_df.append(CDR3_AA_df)
+#            CDR3_df = AA_sequence_df.iloc[indexstart:indexend]
+#            CDR3_AA_df.append(CDR3_df)
+#        except ValueError:
+#            Error_CDR3.append(CDR3)
+#            pass
+#    else:
+#        pass
+#print(CDR3_all_df)
+print(Found_CDR3)
+print(Error_CDR3)
+#print(CDR3_all_df)
+#CDR3_AA_df = pd.concat(CDR3_AA_df)
+#print(CDR3_AA_df)
+#CDR3_AA_df.to_csv(path + 'PDBSum_data/TRB_CDR3_AA_matched_df.csv')
+
+    
+#CDR3_matched_Epitopes_df.to_csv(path + 'PDBSum_data/CDR3_matched_df_TRB.csv')
+
+#    
+#df_CDR3 = pd.read_csv(path + '/PDBSum_data/CDR3_matched_df.csv')
+#print(df_CDR3.head())
+#
+#unique_epi2 = df_CDR3['Epitope'].unique()
+#print('Unique epitopes from from matched df = ' + str(len(unique_epi2)))
+#uniquePDB = df_CDR3['PDB'].unique()
+#print('Unique PDBs from matched df = ' + str(len(uniquePDB)))
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 ##  Concat all dataframes into Ligand_df
 #    Ligand_df = pd.DataFrame({'idx':[1,2,3], 'dfs':[df1, df2, df3]})
-
-CDR = 'CAVNF'
-#bCDR3seq = 'CASRPGLAGGRPEQYF'
-#aCDR3seq = 'CAVTTDSWGKLQF'
-# find where CDR3seq starts in the residue row,
+#
+#CDR = 'CASRPGLAGGRPEQYF'
+##bCDR3seq = 'CASRPGLAGGRPEQYF'
+##aCDR3seq = 'CAVTTDSWGKLQF'
+## find where CDR3seq starts in the residue row,
 #seq = AA_sequence_df.Residue.astype(str).str.cat()
-indexstart = seq.index(CDR)
-indexend = indexstart + len(CDR)
-#
-CDR3_df = AA_sequence_df.iloc[indexstart:indexend]
-#
-print(CDR3_df)
+#indexstart = seq.index(CDR)
+#indexend = indexstart + len(CDR)
+##
+#CDR3_df = AA_sequence_df.iloc[indexstart:indexend]
+##
+#print(CDR3_df)
 
 
 

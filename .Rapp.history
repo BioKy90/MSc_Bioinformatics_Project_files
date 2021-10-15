@@ -1,0 +1,118 @@
+13mer_CDR3 <- (9,9,9,9,9,9,9,10,10)#
+14mer_CDR3 <- (9,9,9,9,9,9,9,9,10,13,13,13)#
+15mer_CDR3 <- (9,9,9,10,10,10,10,10,13)#
+16mer_CDR3 <- (8,8,9,9,9,9,10,10)#
+#
+library("ggplot2")#
+library(tidyverse)#
+#
+CDR3_13mer <- c(rep(9, 7), rep(10, 2))#
+names(CDR3_13mer) <- rep("13mer", length(CDR3_13mer))#
+#
+CDR3_14mer <- c(rep(9, 8), 10, rep(13, 3))#
+names(CDR3_14mer) <- rep("14mer", length(CDR3_14mer))#
+#
+CDR3_15mer <- c(rep(9, 3), rep(10, 5), 13)#
+names(CDR3_15mer) <- rep("15mer", length(CDR3_15mer))#
+#
+CDR3_16mer <- c(rep(8, 2), rep(9, 4), rep(10, 2))#
+names(CDR3_16mer) <- rep("16mer", length(CDR3_16mer))#
+#
+all_CDR3 <- data.frame(#
+    CDR3_length = c(names(CDR3_13mer), names(CDR3_14mer), names(CDR3_15mer), names(CDR3_16mer)),#
+    Human_TRB_epitope_lengths = c(CDR3_13mer, CDR3_14mer, CDR3_15mer, CDR3_16mer),#
+    Epitope_length = factor(c(CDR3_13mer, CDR3_14mer, CDR3_15mer, CDR3_16mer),#
+                       levels = c(13:8)) #
+    )#
+#
+ggplot(all_CDR3, aes(fill = Epitope_length, y = Human_TRB_epitope_lengths, x = CDR3_length)) +#
+    geom_bar(stat = "identity", position = "fill") +#
+    theme_bw()
+13mer_CDR3 <- (8,8,9,9,9,9,10,10,10,13)#
+14mer_CDR3 <- (10,13,13)#
+15mer_CDR3 <- (9,9,9,9,9,9,9,10,10,11,11,11,11,13)#
+16mer_CDR3 <- (9,9,9)#
+library("ggplot2")#
+library(tidyverse)#
+#
+CDR3_13mer <- c(rep(9, 7), rep(10, 2))#
+names(CDR3_13mer) <- rep("13mer", length(CDR3_13mer))#
+#
+CDR3_14mer <- c(rep(9, 8), 10, rep(13, 3))#
+names(CDR3_14mer) <- rep("14mer", length(CDR3_14mer))#
+#
+CDR3_15mer <- c(rep(9, 3), rep(10, 5), 13)#
+names(CDR3_15mer) <- rep("15mer", length(CDR3_15mer))#
+#
+CDR3_16mer <- c(rep(8, 2), rep(9, 4), rep(10, 2))#
+names(CDR3_16mer) <- rep("16mer", length(CDR3_16mer))#
+#
+all_CDR3 <- data.frame(#
+    CDR3_length = c(names(CDR3_13mer), names(CDR3_14mer), names(CDR3_15mer), names(CDR3_16mer)),#
+    Human_TRA_epitope_lengths = c(CDR3_13mer, CDR3_14mer, CDR3_15mer, CDR3_16mer),#
+    Epitope_length = factor(c(CDR3_13mer, CDR3_14mer, CDR3_15mer, CDR3_16mer),#
+                       levels = c(13:8)) #
+    )#
+#
+ggplot(all_CDR3, aes(fill = Epitope_length, y = Human_TRA_epitope_lengths, x = CDR3_length)) +#
+    geom_bar(stat = "identity", position = "fill") +#
+    theme_bw()
+13mer_CDR3 <- (8,8,9,9,9,9,10,10,10,13)#
+14mer_CDR3 <- (10,13,13)#
+15mer_CDR3 <- (9,9,9,9,9,9,9,10,10,11,11,11,11,13)#
+16mer_CDR3 <- (9,9,9)#
+library("ggplot2")#
+library(tidyverse)#
+#
+CDR3_13mer <- c(rep(9, 7), rep(10, 2))#
+names(CDR3_13mer) <- rep("13mer", length(CDR3_13mer))#
+#
+CDR3_14mer <- c(rep(9, 8), 10, rep(13, 3))#
+names(CDR3_14mer) <- rep("14mer", length(CDR3_14mer))#
+#
+CDR3_15mer <- c(rep(9, 3), rep(10, 5), 13)#
+names(CDR3_15mer) <- rep("15mer", length(CDR3_15mer))#
+#
+CDR3_16mer <- c(rep(8, 2), rep(9, 4), rep(10, 2))#
+names(CDR3_16mer) <- rep("16mer", length(CDR3_16mer))#
+#
+all_CDR3 <- data.frame(#
+    CDR3_length = c(names(CDR3_13mer), names(CDR3_14mer), names(CDR3_15mer), names(CDR3_16mer)),#
+    Human_TRA_epitope_lengths = c(CDR3_13mer, CDR3_14mer, CDR3_15mer, CDR3_16mer),#
+    Epitope_length = factor(c(CDR3_13mer, CDR3_14mer, CDR3_15mer, CDR3_16mer),#
+                       levels = c(13:8)) #
+    )#
+#
+ggplot(all_CDR3, aes(fill = Epitope_length, y = Human_TRA_epitope_lengths, x = CDR3_length)) +#
+    geom_bar(stat = "identity", position = "fill") +#
+    theme_bw()
+13mer_CDR3 <- (8,8,9,9,9,9,10,10,10,13)#
+14mer_CDR3 <- (10,13,13)#
+15mer_CDR3 <- (9,9,9,9,9,9,9,10,10,11,11,11,11,13)#
+16mer_CDR3 <- (9,9,9)#
+library("ggplot2")#
+library(tidyverse)#
+#
+CDR3_13mer <- c(rep(9, 7), rep(10, 2))#
+names(CDR3_13mer) <- rep("13mer", length(CDR3_13mer))#
+#
+CDR3_14mer <- c(rep(9, 8), 10, rep(13, 3))#
+names(CDR3_14mer) <- rep("14mer", length(CDR3_14mer))#
+#
+CDR3_15mer <- c(rep(9, 3), rep(10, 5), 13)#
+names(CDR3_15mer) <- rep("15mer", length(CDR3_15mer))#
+#
+CDR3_16mer <- c(rep(8, 2), rep(9, 4), rep(10, 2))#
+names(CDR3_16mer) <- rep("16mer", length(CDR3_16mer))#
+#
+all_CDR3 <- data.frame(#
+    CDR3_length = c(names(CDR3_13mer), names(CDR3_14mer), names(CDR3_15mer), names(CDR3_16mer)),#
+    Human_TRA_epitope_lengths = c(CDR3_13mer, CDR3_14mer, CDR3_15mer, CDR3_16mer),#
+    Epitope_length = factor(c(CDR3_13mer, CDR3_14mer, CDR3_15mer, CDR3_16mer),#
+                       levels = c(13:8)) #
+    )#
+#
+ggplot(all_CDR3, aes(fill = Epitope_length, y = Human_TRA_epitope_lengths, x = CDR3_length)) +#
+    geom_bar(stat = "identity", position = "fill") +#
+    theme_bw()
+y

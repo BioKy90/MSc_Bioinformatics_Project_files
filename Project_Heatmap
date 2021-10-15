@@ -1,0 +1,113 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+Created on Tue Oct  5 11:12:59 2021
+
+@author: Ky
+"""
+import pandas as pd
+import numpy as np
+import seaborn as sns 
+#sns.set_context(fontweight='bold')
+import matplotlib
+import matplotlib.pylab as plt
+
+path = '/Users/kyvinguyen/Documents/Uni/Birkbeck/MSc_Bioinformatics/Research_Project/Project_python_files/'
+pd.set_option('display.max_columns', None)
+
+#ELAGIGILTV = pd.read_csv(path + '/PDBSum_data/ELAGIGILTV_heatmap_allbonds.csv',index_col=0)
+
+ELA_letters = ['E', 'L', 'A', 'G', 'I', 'G', 'I', 'L', 'T', 'V']
+HMT_letters = ['H', 'M', 'T', 'E', 'V', 'V', 'R', 'H', 'C']
+LLF_letters = ['L', 'L', 'F', 'G', 'Y', 'P', 'V', 'Y', 'V']
+
+ELA_cdr3s = ['3hg1', '3qdg', '3qdm', '4jff', '4l3e']
+HMT_cdr3s = ['6vqo', '6vrm', '6vrn']
+LLF_cdr3s = ['1bd2', '1a07', '4ftv']
+# all unique contacts (from Unique_interactions_df)
+ELAGIGILTV = [[0, 0, 1, 2, 2, 2, 3, 1, 1, 0],
+[0, 0, 1, 2, 1, 0, 2, 2, 0, 0],
+[0, 0, 0, 2, 1, 1, 4, 2, 2, 0],
+[0, 0, 1, 1, 2, 1, 3, 1, 2, 0],
+[0, 0, 0, 2, 1, 0, 2, 1, 0, 0]]
+HMTEVVRHC = [[0, 0, 0, 3, 1, 4, 6, 6, 0],
+[0, 0, 0, 4, 0, 3, 7, 6, 0],
+[0, 0, 0, 2, 0, 1, 8, 2, 0]]
+LLFGYPVYV = [[0, 0, 0, 0, 1, 1, 2, 3, 0],
+[0, 0, 0, 0, 3, 1, 1, 3, 0],
+[0, 0, 0, 0, 3, 1, 4, 3, 0]]
+# all contacts (from Interactions_df)
+#ELAGIGILTV = [[0, 0, 1, 4, 9, 2, 9, 2, 1, 0],
+#[0, 0, 1, 4, 1, 0, 5, 3, 0, 0],
+#[0, 0, 0, 7, 2, 1, 9, 5, 8, 0],
+#[0, 0, 1, 2, 3, 1, 11, 1, 5, 0],
+#[0, 0, 0, 4, 1, 0, 6, 1, 0, 0]]
+#HMTEVVRHC = [[0, 0, 0, 7, 1, 4, 14, 25, 0],
+#[0, 0, 0, 5, 0, 6, 28, 20, 0],
+#[0, 0, 0, 4, 0, 1, 28, 21, 0]]
+#LLFGYPVYV = [[0, 0, 0, 5, 12, 1, 6, 12, 0],
+#[0, 0, 0, 18, 12, 0, 1, 0, 0],
+#[0, 0, 0, 0, 13, 2, 9, 7, 0]]
+# H-bonded contacts only 
+ELAGIGILTV_HB = [[0, 0, 0, 0, 0, 0, 1, 0, 0, 0],
+[0, 0, 0, 0, 0, 0, 1, 0, 1, 0],
+[0, 0, 0, 0, 0, 0, 1, 0, 1, 0]]
+HMTEVVRHC_HB = [[0, 0, 0, 1, 0, 1, 2, 3, 0],
+[0, 0, 0, 1, 0, 1, 3, 2, 0],
+[0, 0, 0, 1, 0, 0, 3, 1, 0]]
+LLFGYPVYV_HB = [[0, 0, 0, 0, 0, 0, 0, 1, 0],
+[0, 0, 0, 0, 1, 0, 0, 1, 0]]
+
+#total_ELA = sns.heatmap(ELAGIGILTV, 
+#xticklabels= ELA_letters, 
+#yticklabels= ELA_cdr3s, 
+#cmap="Blues",
+#cbar_kws={'label': 'Total contacts','ticks':[1,2,3,4], "shrink": .60},
+#square=True,
+#linewidths=2, linecolor='white').xaxis.set_ticks_position('top')
+
+#total_HMT = sns.heatmap(HMTEVVRHC, 
+#xticklabels= HMT_letters, 
+#yticklabels= HMT_cdr3s, 
+#cmap="Blues",
+#cbar_kws={'label': 'Total contacts','ticks':[1,2,3,4,5,6,7,8], "shrink": .60},
+#square=True,
+#linewidths=2, linecolor='white').xaxis.set_ticks_position('top')
+
+#total_LLF = sns.heatmap(LLFGYPVYV, 
+#xticklabels= LLF_letters, 
+#yticklabels= LLF_cdr3s, 
+#cmap="Blues",
+#cbar_kws={'label': 'Total contacts','ticks':[1,2,3,4,5,6], "shrink": .60}, 
+#square=True,
+#linewidths=2, linecolor='white').xaxis.set_ticks_position('top')
+
+#HB_ELA = sns.heatmap(ELAGIGILTV_HB, 
+#xticklabels= ELA_letters, 
+#yticklabels= ELA_cdr3s[:-2], 
+#cmap="Greens",
+#cbar_kws={'label': 'Total H-bonds','ticks':[1], "shrink": .60},
+#square=True,
+#linewidths=2, linecolor='white').xaxis.set_ticks_position('top')
+
+#HB_HMT = sns.heatmap(HMTEVVRHC_HB, 
+#xticklabels= HMT_letters, 
+#yticklabels= HMT_cdr3s, 
+#cmap="Greens", 
+#cbar_kws={'label': 'Total H-bonds','ticks':[1,2,3], "shrink": .60},
+#square=True,
+#linewidths=2, linecolor='white').xaxis.set_ticks_position('top')
+
+HB_LLF = sns.heatmap(LLFGYPVYV_HB, 
+xticklabels= LLF_letters, 
+#yticklabels= LLF_cdr3s, 
+yticklabels= LLF_cdr3s[:-1],
+cmap="Greens",
+cbar_kws={'label': 'Total H-bonds','ticks':[1,2], "shrink": .60},
+square=True,
+linewidths=2, linecolor='white').xaxis.set_ticks_position('top')
+
+#plt.title('Total CDR3 contact frequency in HMTEVVRHC')
+#total_HMT.set_yticklabels(total_HMT.get_yticklabels(), rotation=45)
+plt.yticks(rotation=1)
+plt.show()
